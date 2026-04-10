@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mis 15 Años: Génesis Milena</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .font-aurora { font-family: 'Pinyon Script', cursive; }
+        .font-body { font-family: 'Quicksand', sans-serif; }
+        
+        body {
+            background: linear-gradient(rgba(255, 255, 255, 0.60), rgba(255, 255, 255, 0.92)), 
+                        url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1920');
+            background-size: cover; 
+            background-attachment: fixed; 
+            background-position: center;
+        }
+
+        .carrusel-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 15px 0;
+            scrollbar-width: none;
+            scroll-snap-type: x mandatory; 
+        }
+        .carrusel-container::-webkit-scrollbar { display: none; }
+
+        .card-special {
+            min-width: 260px;
+            height: 380px;
+            margin: 0 10px;
+            border: 2px solid #d4af37;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            background: white;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            background-image: url('https://www.transparentpng.com/download/floral/pink-flowers-border-png-3.png');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            padding: 6px;
+            scroll-snap-align: center; 
+        }
+
+        .card-special img {
+            width: 100%; height: 100%; object-fit: cover;
+            border-radius: 6px; cursor: pointer; display: block;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 15px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .nav-container::-webkit-scrollbar { display: none; }
+
+        .nav-link {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #1a2e23;
+            white-space: nowrap; 
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .nav-link.active { 
+            color: white;
+            background: #b66481;
+            border-color: #d4af37;
+        }
+
+        .video-wrapper { margin-bottom: 3rem; text-align: center; }
+        .video-item { border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2); background: black;}
+        
+        .btn-descarga {
+            display: inline-block;
+            margin-top: 15px;
+            background: #b06d85;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .img-grid { width: 100%; height: 280px; object-fit: cover; cursor: pointer; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        #viewer { 
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); 
+            z-index: 100; flex-direction: column; align-items: center; justify-content: center;
+            touch-action: none; 
+        }
+        #viewer-img {
+            max-width: 85vw;
+            max-height: 70vh;
+            object-fit: contain;
+            user-select: none;
+        }
+    </style>
+</head>
+<body class="font-body min-h-screen text-[#1a2e23] pb-10">
+
+    <header class="pt-6 pb-2 text-center px-6">
+        <h1 class="text-5xl md:text-7xl font-aurora text-[#0f1a14] mb-1">Génesis Milena</h1>
+        <div class="mb-6 inline-flex items-center gap-3 bg-white/80 px-8 py-1 rounded-full border border-[#d4af37]/30 shadow-sm">
+            <span class="text-[#b66481] text-xl">❤</span>
+            <p class="text-[26px] font-aurora text-black leading-none pt-1">Mis Quince Años</p>
+            <span class="text-[#b66481] text-xl">❤</span>
+        </div>
+    </header>
+
+    <section class="max-w-6xl mx-auto mb-8">
+        <h2 class="text-center font-aurora text-5xl text-[#b06d85] mb-2">Momentos Especiales</h2>
+        <div class="relative px-12">
+            <button onclick="scrollCarrusel(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-lg text-[#b06d85]">❮</button>
+            <div id="carrusel-especial" class="carrusel-container"></div>
+            <button onclick="scrollCarrusel(1)" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-lg text-[#b06d85]">❯</button>
+        </div>
+    </section>
+
+    <nav class="nav-container mb-8">
+        <div class="nav-link active" onclick="switchTab('galeria', this)">Galería Completa</div>
+        <div class="nav-link" onclick="switchTab('sesion', this)">Sesión de Fotos</div>
+        <div class="nav-link" onclick="switchTab('grupales', this)">Fotos Grupales</div>
+        <div class="nav-link" onclick="switchTab('videos', this)">Videos de la Fiesta</div>
+    </nav>
+
+    <main id="tab-galeria" class="tab-content active">
+        <section class="max-w-[1100px] mx-auto px-2">
+            <div id="grid-galeria" class="grid grid-cols-2 lg:grid-cols-3 gap-1"></div>
+        </section>
+    </main>
+
+    <main id="tab-sesion" class="tab-content">
+        <section class="max-w-[1100px] mx-auto px-2">
+            <div id="grid-sesion" class="grid grid-cols-2 lg:grid-cols-3 gap-1"></div>
+        </section>
+    </main>
+
+    <main id="tab-grupales" class="tab-content">
+        <section class="max-w-[1100px] mx-auto px-2">
+            <div id="grid-grupales" class="grid grid-cols-2 lg:grid-cols-3 gap-1"></div>
+        </section>
+    </main>
+
+    <main id="tab-videos" class="tab-content">
+        <section class="max-w-[800px] mx-auto px-4 flex flex-col">
+            <div class="video-wrapper">
+                <div class="video-item aspect-video"><video class="w-full h-full" controls><source src="Video Project.mp4" type="video/mp4"></video></div>
+                <a href="Video Project.mp4" download class="btn-descarga">Descargar Video</a>
+            </div>
+            <div class="video-wrapper">
+                <div class="video-item aspect-video"><video class="w-full h-full" controls><source src="WhatsApp Video 2026-04-08 at 16.24.12.mp4" type="video/mp4"></video></div>
+                <a href="WhatsApp Video 2026-04-08 at 16.24.12.mp4" download class="btn-descarga">Descargar Video</a>
+            </div>
+            <div class="video-wrapper">
+                <div class="video-item aspect-video"><video class="w-full h-full" controls><source src="WhatsApp Video 2026-04-08 at 17.12.35.mp4" type="video/mp4"></video></div>
+                <a href="WhatsApp Video 2026-04-08 at 17.12.35.mp4" download class="btn-descarga">Descargar Video</a>
+            </div>
+            <div class="video-wrapper">
+                <div class="video-item aspect-video"><video class="w-full h-full" controls><source src="WhatsApp Video 2026-04-08 at 16 (online-video-cutter.com).mp4" type="video/mp4"></video></div>
+                <a href="WhatsApp Video 2026-04-08 at 16 (online-video-cutter.com).mp4" download class="btn-descarga">Descargar Video</a>
+            </div>
+        </section>
+    </main>
+
+    <div id="viewer" onclick="closeViewerFromBackground(event)">
+        <button onclick="closeViewer()" class="absolute top-4 right-6 text-white text-4xl">&times;</button>
+        <div class="relative flex items-center justify-center w-full h-[75vh]">
+            <button onclick="changeImage(-1); event.stopPropagation();" class="absolute left-4 text-white text-3xl">❮</button>
+            <img id="viewer-img" src="">
+            <button onclick="changeImage(1); event.stopPropagation();" class="absolute right-4 text-white text-3xl">❯</button>
+        </div>
+        <a id="download-link" href="#" download class="btn-descarga">Descargar Foto</a>
+    </div>
+
+    <script>
+        const fotos_especiales = ["Gemini_Generated_Image_aq2yabaq2yabaq2y.webp", "Gemini_Generated_Image_iuuzpxiuuzpxiuuz.webp", "Imagen2.webp", "Imagen3.webp", "Imagen5.webp", "Imagen6.webp"];
+        const fotos_sesion = ["Genesis_Milena_3(1).webp","Gemini_Generated_Image_aq2yabaq2yabaq2y.webp","Gemini_Generated_Image_iuuzpxiuuzpxiuuz.webp","Imagen2.webp","Imagen3.webp","Imagen5.webp","Imagen6.webp","Imagen7.webp","DSC00699.webp","DSC00710.webp", "DSC00866.webp", "DSC01009.webp", "DSC01011.webp", "DSC01015.webp", "DSC01016.webp","DSC01020.webp", "DSC01038.webp","DSC01053.webp","DSC01065.webp","DSC01140.webp","DSC01143.webp","DSC01144.webp"];
+        const fotos_grupales = ["DSC01153.webp","DSC00763.webp","DSC00766.webp","DSC00767.webp","DSC00769.webp","DSC00774.webp","DSC00780.webp","DSC00792.webp","DSC00799.webp","DSC00801.webp","DSC00802.webp", "DSC00804.webp", "DSC00818.webp", "DSC00824.webp", "DSC00826.webp", "DSC00829.webp", "DSC00833.webp", "DSC00835.webp","DSC00836.webp","DSC00845.webp","DSC00851.webp","DSC00853.webp","DSC00863.webp","DSC00867.webp","DSC00873.webp","DSC00877.webp","DSC00879.webp","DSC00881.webp", "DSC00886.webp", "DSC00892.webp", "DSC00897.webp", "DSC00900.webp", "DSC00903.webp", "DSC00906.webp", "DSC00909.webp", "DSC00913.webp", "DSC00914.webp","DSC00917.webp", "DSC00919.webp", "DSC00922.webp", "DSC00932.webp", "DSC00937.webp", "DSC00940.webp", "DSC00943.webp", "DSC00945.webp", "DSC00948.webp", "DSC00951.webp", "DSC00952.webp", "DSC00954.webp", "DSC00958.webp", "DSC00962.webp", "DSC00964.webp", "DSC00966.webp", "DSC00969.webp", "DSC00970.webp", "DSC00972.webp", "DSC00974.webp","DSC00976.webp", "DSC00978.webp", "DSC00980.webp", "DSC00983.webp", "DSC00984.webp", "DSC00987.webp", "DSC00992.webp", "DSC00994.webp", "DSC00997.webp", "DSC01000.webp","DSC01004.webp", "DSC01007.webp", "DSC01062.webp", "DSC01069.webp", "DSC01080.webp", "DSC01088.webp", "DSC01098.webp", "DSC01112.webp", "DSC01116.webp", "DSC01128.webp"];
+        
+        const fotos_todas = [...fotos_sesion, ...fotos_grupales];
+        let currentList = fotos_todas;
+        let currentIndex = 0;
+
+        document.addEventListener('keydown', e => {
+            if (document.getElementById('viewer').style.display === 'flex') {
+                if (e.key === "ArrowRight") changeImage(1);
+                if (e.key === "ArrowLeft") changeImage(-1);
+            }
+        });
+
+        let touchstartX = 0;
+        let touchendX = 0;
+        const viewer = document.getElementById('viewer');
+        viewer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; }, {passive: true});
+        viewer.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            if (touchendX < touchstartX - 50) changeImage(1);
+            if (touchendX > touchstartX + 50) changeImage(-1);
+        }, {passive: true});
+
+        const carrusel = document.getElementById('carrusel-especial');
+        fotos_especiales.forEach((src, i) => carrusel.innerHTML += `<div class="card-special"><img src="${src}" onclick="openViewer(${i}, 'especial')"></div>`);
+
+        function render(list, id) {
+            const container = document.getElementById(id);
+            if(container) list.forEach((foto, i) => container.innerHTML += `<img src="${foto}" class="img-grid" onclick="openViewer(${i}, '${id}')">`);
+        }
+        render(fotos_todas, 'grid-galeria');
+        render(fotos_sesion, 'grid-sesion');
+        render(fotos_grupales, 'grid-grupales');
+
+        function scrollCarrusel(d) { document.getElementById('carrusel-especial').scrollBy({ left: d * 280, behavior: 'smooth' }); }
+
+        function switchTab(tab, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll('video').forEach(v => { v.pause(); v.currentTime = 0; });
+            document.getElementById('tab-' + tab).classList.add('active');
+            el.classList.add('active');
+        }
+
+        function openViewer(index, source) {
+            if(source === 'especial') currentList = fotos_especiales;
+            else if(source === 'grid-sesion') currentList = fotos_sesion;
+            else if(source === 'grid-grupales') currentList = fotos_grupales;
+            else currentList = fotos_todas;
+            currentIndex = index;
+            updateViewer();
+            document.getElementById('viewer').style.display = 'flex';
+        }
+
+        function updateViewer() {
+            const src = currentList[currentIndex];
+            document.getElementById('viewer-img').src = src;
+            document.getElementById('download-link').href = src;
+        }
+
+        function closeViewer() { document.getElementById('viewer').style.display = 'none'; }
+        function changeImage(s) { currentIndex = (currentIndex + s + currentList.length) % currentList.length; updateViewer(); }
+        function closeViewerFromBackground(e) { if(e.target.id === 'viewer') closeViewer(); }
+    </script>
+</body>
+</html>
